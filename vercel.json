@@ -1,8 +1,0 @@
-{
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/product/.*", "dest": "/product/" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ],
-  "outputDirectory": "dist"
-}
