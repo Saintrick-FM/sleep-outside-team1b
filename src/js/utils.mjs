@@ -28,3 +28,25 @@ export function getParam() {
   const product = urlParams.get("product");
   return product;
 }
+
+/**
+ * Render a list using a template function
+ * @param {Function} templateFn - Function to generate HTML template for each item
+ * @param {HTMLElement} parentElement - Element to insert the list into
+ * @param {Array} list - Array of items to render
+ * @param {string} position - Position to insert the list (default: 'afterbegin')
+ * @param {boolean} clear - Whether to clear the parent element first (default: false)
+ */
+export function renderListWithTemplate(
+  templateFn,
+  parentElement,
+  list,
+  position = "afterbegin",
+  clear = false,
+) {
+  if (clear) {
+    parentElement.innerHTML = "";
+  }
+  const htmlStrings = list.map(templateFn);
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
