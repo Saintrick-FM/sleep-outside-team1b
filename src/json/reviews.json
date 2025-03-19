@@ -1,0 +1,33 @@
+[
+  {
+    "productId": "880RR",
+    "reviews": [
+      {
+        "id": "r1",
+        "reviewer": "John Doe",
+        "date": "2023-05-15",
+        "rating": 4,
+        "comment": "Great tent, easy to set up. Only downside is it's a bit heavy for backpacking."
+      },
+      {
+        "id": "r2",
+        "reviewer": "Jane Smith",
+        "date": "2023-06-20",
+        "rating": 5,
+        "comment": "Perfect for family camping! Spacious and durable."
+      }
+    ]
+  },
+  {
+    "productId": "985RF",
+    "reviews": [
+      {
+        "id": "r3",
+        "reviewer": "Mike Johnson",
+        "date": "2023-04-10",
+        "rating": 3,
+        "comment": "Decent tent but I had issues with the zipper after a few uses."
+      }
+    ]
+  }
+] 
