@@ -53,10 +53,11 @@ function productDetailsTemplate(product) {
 
 function reviewTemplate(review) {
   // Generate stars based on rating
-  const stars = Array(5).fill("☆").map((star, index) => 
-    index < review.rating ? "★" : "☆"
-  ).join("");
-  
+  const stars = Array(5)
+    .fill("☆")
+    .map((star, index) => (index < review.rating ? "★" : "☆"))
+    .join("");
+
   return `
     <div class="review">
       <div class="review-header">
@@ -86,10 +87,10 @@ export default class ProductDetails {
     document
       .getElementById("addToCart")
       .addEventListener("click", this.addToCart.bind(this));
-      
+
     // Load and display reviews
     this.loadReviews();
-    
+
     // Add event listener for review form submission
     document
       .getElementById("review-form")
@@ -112,44 +113,49 @@ export default class ProductDetails {
       productDetailsTemplate(this.product),
     );
   }
-  
+
   async loadReviews() {
     const reviewsContainer = document.getElementById("reviews-container");
-    const reviews = await this.reviewDataSource.findReviewsByProductId(this.productId);
-    
+    const reviews = await this.reviewDataSource.findReviewsByProductId(
+      this.productId,
+    );
+
     if (reviews.length === 0) {
-      reviewsContainer.innerHTML = '<p>No reviews yet. Be the first to review this product!</p>';
+      reviewsContainer.innerHTML =
+        "<p>No reviews yet. Be the first to review this product!</p>";
       return;
     }
-    
-    const reviewsHtml = reviews.map(review => reviewTemplate(review)).join('');
+
+    const reviewsHtml = reviews
+      .map((review) => reviewTemplate(review))
+      .join("");
     reviewsContainer.innerHTML = reviewsHtml;
   }
-  
+
   async submitReview(event) {
     event.preventDefault();
-    
+
     const reviewerName = document.getElementById("reviewer-name").value;
     const rating = parseInt(document.getElementById("review-rating").value);
     const comment = document.getElementById("review-comment").value;
-    
+
     // Create new review object
     const newReview = {
       id: `r${Date.now()}`, // Generate a unique ID based on timestamp
       reviewer: reviewerName,
-      date: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
+      date: new Date().toISOString().split("T")[0], // Format as YYYY-MM-DD
       rating: rating,
-      comment: comment
+      comment: comment,
     };
-    
+
     // Submit the review
     await this.reviewDataSource.addReview(this.productId, newReview);
-    
+
     // Clear the form
     document.getElementById("reviewer-name").value = "";
     document.getElementById("review-comment").value = "";
     document.getElementById("review-rating").value = "5";
-    
+
     // In a real application with a backend, we would reload the reviews here
     // For this demo, manually add the review to the display
     const reviewsContainer = document.getElementById("reviews-container");
