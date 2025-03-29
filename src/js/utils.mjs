@@ -22,11 +22,11 @@ export function setClick(selector, callback) {
   qs(selector).addEventListener("click", callback);
 }
 
-export function getParam() {
+export function getParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const category = urlParams.get("category");
-  return category;
+  const value = urlParams.get(param);
+  return value;
 }
 
 /**

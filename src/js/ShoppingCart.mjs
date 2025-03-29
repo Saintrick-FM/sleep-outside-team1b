@@ -29,13 +29,22 @@ export default class ShoppingCart {
   }
 
   renderItems() {
+    const cartFooter = document.querySelector(".cart-footer");
+
     // Render the list if we have items
     if (this.items.length === 0) {
       this.listElement.innerHTML = "<p>No items in cart</p>";
+      cartFooter.classList.add("hide");
       return;
     }
 
     const htmlItems = this.items.map((item) => cartItemTemplate(item));
     this.listElement.innerHTML = htmlItems.join("");
+
+    // Calculate and display total
+    const total = this.items.reduce((sum, item) => sum + item.FinalPrice, 0);
+    document.querySelector(".cart-total").textContent =
+      `Total: $${total.toFixed(2)}`;
+    cartFooter.classList.remove("hide");
   }
 }
