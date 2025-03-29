@@ -319,6 +319,23 @@ footer {
   }
 }
 
+/* Cart Styles */
+.cart-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--light-grey);
+  margin-top: 1rem;
+}
+
+.cart-footer.hide {
+  display: none;
+}
+
+.cart-total {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
 /* Product Categories */
 .product-categories {
   display: flex;
