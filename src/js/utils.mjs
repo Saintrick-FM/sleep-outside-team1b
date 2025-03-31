@@ -78,4 +78,27 @@ export async function loadHeaderFooter() {
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
   }
+
+  // Update cart count in header
+  try {
+    const cartItems = getLocalStorage("so-cart") || [];
+    const cartCount = Array.isArray(cartItems) ? cartItems.length : 0;
+    const cartCountElement = document.querySelector(".cart-count");
+    if (cartCountElement) {
+      if (cartCount > 0) {
+        cartCountElement.textContent = cartCount;
+        cartCountElement.classList.remove("hide"); // Ensure it's visible
+      } else {
+        cartCountElement.textContent = ""; // Clear text if empty
+        cartCountElement.classList.add("hide"); // Hide if empty
+      }
+    }
+  } catch (error) {
+    console.error("Error updating cart count:", error);
+    // Optionally hide the count element on error
+    const cartCountElement = document.querySelector(".cart-count");
+    if (cartCountElement) {
+      cartCountElement.classList.add("hide");
+    }
+  }
 }

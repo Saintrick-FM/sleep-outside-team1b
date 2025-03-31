@@ -9,7 +9,13 @@ function productDetailsTemplate(product) {
       src="${product.Images.PrimaryLarge}"
       alt="${product.NameWithoutBrand}"
     />
-    <p class="product-card__price">$${product.FinalPrice}</p>
+    ${product.ListPrice && product.ListPrice > product.FinalPrice
+      ? `<p class="product-card__price--original"><del>$${product.ListPrice.toFixed(2)}</del></p>`
+      : ""}
+    <p class="product-card__price--final">$${product.FinalPrice.toFixed(2)}</p>
+    ${product.ListPrice && product.ListPrice > product.FinalPrice
+      ? `<p class="product-card__price--savings">You save $${(product.ListPrice - product.FinalPrice).toFixed(2)}</p>`
+      : ""}
     <p class="product__color">${product.Colors[0].ColorName}</p>
     <p class="product__description">
     ${product.DescriptionHtmlSimple}
