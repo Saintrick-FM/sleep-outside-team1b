@@ -14,4 +14,13 @@ const listElement = document.querySelector(".product-list");
 // then create an instance of the ProductList class and send it the correct information.
 const myList = new ProductList(category, dataSource, listElement);
 // finally call the init method to show the products
-myList.init();
+// init returns the list of products used.
+const products = await myList.init();
+
+// Set the breadcrumbs
+const breadcrumbElement = document.querySelector(".breadcrumbs");
+if (breadcrumbElement && category && products) {
+  // Capitalize the first letter of the category
+  const capitalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+  breadcrumbElement.innerHTML = `${capitalizedCategory} > (${products.length} items)`;
+}
