@@ -64,11 +64,18 @@ export async function loadTemplate(path) {
 }
 
 export async function loadHeaderFooter() {
+  // Reverted paths based on Vite's public directory handling
   const headerTemplate = await loadTemplate("/partials/header.html");
   const footerTemplate = await loadTemplate("/partials/footer.html");
 
-  const headerElement = document.querySelector("#header");
-  const footerElement = document.querySelector("#footer");
+  const headerElement = document.querySelector("#main-header"); // Updated ID
+  const footerElement = document.querySelector("#main-footer"); // Updated ID
   renderWithTemplate(headerTemplate, headerElement);
   renderWithTemplate(footerTemplate, footerElement);
+
+  // Set the current year in the footer
+  const yearElement = document.querySelector("#year");
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
 }
