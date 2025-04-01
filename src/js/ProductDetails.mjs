@@ -103,14 +103,30 @@ export default class ProductDetails {
       .addEventListener("submit", this.submitReview.bind(this));
   }
   addToCart() {
-    const cartItems = getLocalStorage("so-cart") || [];
-    // check if cart items is an array
-    if (Array.isArray(cartItems)) {
-      cartItems.push(this.product);
-      setLocalStorage("so-cart", cartItems);
-    } else {
-      setLocalStorage("so-cart", [this.product]); // if it's not an array, create one with the product and save it
+    // Get the current cart or initialize an empty array
+    let cartItems = getLocalStorage("so-cart") || [];
+    // Ensure cartItems is always an array
+    if (!Array.isArray(cartItems)) {
+      cartItems = [];
     }
+
+    // Find if the product already exists in the cart
+    const existingItemIndex = cartItems.findIndex(item => item.Id === this.product.Id);
+
+    if (existingItemIndex > -1) {
+      // If item exists, increment quantity
+      cartItems[existingItemIndex].quantity = (cartItems[existingItemIndex].quantity || 1) + 1;
+    } else {
+      // If item doesn't exist, add it with quantity 1
+      this.product.quantity = 1;
+      cartItems.push(this.product);
+    }
+
+    // Save the updated cart back to local storage
+    setLocalStorage("so-cart", cartItems);
+
+    // Optional: Add visual feedback (e.g., alert, animation)
+    alert(`${this.product.NameWithoutBrand} added to cart!`);
   }
   renderProductDetails(selector) {
     const element = document.querySelector(selector);

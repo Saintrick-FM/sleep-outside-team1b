@@ -1,10 +1,10 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 function cartItemTemplate(item) {
   return `<li class="cart-card divider">
     <a href="#" class="cart-card__image">
       <img
-        src="${item.Image}"
+        src="${item.Images.ExtraSmall}" 
         alt="${item.Name}"
       />
     </a>
@@ -12,8 +12,9 @@ function cartItemTemplate(item) {
       <h2 class="card__name">${item.Name}</h2>
     </a>
     <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-    <p class="cart-card__quantity">qty: 1</p>
+    <p class="cart-card__quantity">qty: ${item.quantity}</p>
     <p class="cart-card__price">$${item.FinalPrice}</p>
+    <button class="cart-card__remove" data-id="${item.Id}">X</button>
   </li>`;
 }
 
@@ -25,6 +26,22 @@ export default class ShoppingCart {
 
   async init() {
     this.items = getLocalStorage("so-cart") || [];
+    this.renderItems();
+    this.addRemoveListeners();
+  }
+
+  addRemoveListeners() {
+    this.listElement.addEventListener("click", (event) => {
+      if (event.target.matches(".cart-card__remove")) {
+        const itemId = event.target.dataset.id;
+        this.removeItem(itemId);
+      }
+    });
+  }
+
+  removeItem(id) {
+    this.items = this.items.filter((item) => item.Id !== id);
+    setLocalStorage("so-cart", this.items);
     this.renderItems();
   }
 
@@ -41,8 +58,8 @@ export default class ShoppingCart {
     const htmlItems = this.items.map((item) => cartItemTemplate(item));
     this.listElement.innerHTML = htmlItems.join("");
 
-    // Calculate and display total
-    const total = this.items.reduce((sum, item) => sum + item.FinalPrice, 0);
+    // Calculate and display total considering quantity
+    const total = this.items.reduce((sum, item) => sum + (item.FinalPrice * item.quantity), 0);
     document.querySelector(".cart-total").textContent =
       `Total: $${total.toFixed(2)}`;
     cartFooter.classList.remove("hide");
