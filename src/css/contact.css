@@ -1,0 +1,84 @@
+/* General form container styling (assuming it's within a section or div) */
+.contact-form-section { /* Added this class in src/index.html */
+    max-width: 600px; /* Limit width */
+    margin: 40px auto; /* Center with top/bottom margin */
+    padding: 30px; /* Increased padding */
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.contact-form-section h1 {
+    text-align: center;
+    margin-bottom: 25px; /* Increased margin */
+    color: #333; /* Darker heading color */
+    font-size: 1.8em; /* Slightly larger heading */
+}
+
+/* Form element styling */
+.contact-form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Add space between form elements */
+}
+
+.contact-form-section label {
+    font-weight: bold; /* Make labels bolder */
+    margin-bottom: 5px; /* Space below label */
+    color: #555; /* Slightly lighter label color */
+    display: block; /* Ensure label takes full width */
+}
+
+.contact-form-section input[type="text"],
+.contact-form-section input[type="email"],
+.contact-form-section textarea {
+    padding: 12px; /* Increased padding */
+    font-size: 1rem; /* Standard font size */
+    border: 1px solid #ccc; /* Clearer border */
+    border-radius: 4px; /* Slightly rounded corners */
+    box-sizing: border-box; /* Include padding and border in element's total width/height */
+    width: 100%; /* Make inputs take full width */
+    transition: border-color 0.3s ease; /* Smooth transition for focus */
+}
+
+.contact-form-section input[type="text"]:focus,
+.contact-form-section input[type="email"]:focus,
+.contact-form-section textarea:focus {
+    border-color: #007BFF; /* Highlight border on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); /* Subtle glow on focus */
+}
+
+.contact-form-section textarea {
+    resize: vertical; /* Allow vertical resize only */
+    min-height: 120px; /* Set a minimum height */
+}
+
+.contact-form-section button[type="submit"] {
+    margin-top: 15px; /* Adjusted margin */
+    padding: 12px 20px; /* Comfortable padding */
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #007BFF; /* Primary button color */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease; /* Smooth transitions */
+    align-self: center; /* Center button */
+}
+
+.contact-form-section button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.contact-form-section button[type="submit"]:active {
+    transform: scale(0.98); /* Slight shrink effect on click */
+}
+
+/* Remove old .contact-button styles if no longer needed elsewhere */
+/*
+.contact-button { ... }
+.contact-button:hover { ... }
+*/
