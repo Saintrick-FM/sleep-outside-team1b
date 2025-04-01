@@ -64,11 +64,41 @@ export async function loadTemplate(path) {
 }
 
 export async function loadHeaderFooter() {
+  // Reverted paths based on Vite's public directory handling
   const headerTemplate = await loadTemplate("/partials/header.html");
   const footerTemplate = await loadTemplate("/partials/footer.html");
 
-  const headerElement = document.querySelector("#header");
-  const footerElement = document.querySelector("#footer");
+  const headerElement = document.querySelector("#main-header"); // Updated ID
+  const footerElement = document.querySelector("#main-footer"); // Updated ID
   renderWithTemplate(headerTemplate, headerElement);
   renderWithTemplate(footerTemplate, footerElement);
+
+  // Set the current year in the footer
+  const yearElement = document.querySelector("#year");
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
+
+  // Update cart count in header
+  try {
+    const cartItems = getLocalStorage("so-cart") || [];
+    const cartCount = Array.isArray(cartItems) ? cartItems.length : 0;
+    const cartCountElement = document.querySelector(".cart-count");
+    if (cartCountElement) {
+      if (cartCount > 0) {
+        cartCountElement.textContent = cartCount;
+        cartCountElement.classList.remove("hide"); // Ensure it's visible
+      } else {
+        cartCountElement.textContent = ""; // Clear text if empty
+        cartCountElement.classList.add("hide"); // Hide if empty
+      }
+    }
+  } catch (error) {
+    console.error("Error updating cart count:", error);
+    // Optionally hide the count element on error
+    const cartCountElement = document.querySelector(".cart-count");
+    if (cartCountElement) {
+      cartCountElement.classList.add("hide");
+    }
+  }
 }
