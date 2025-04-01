@@ -21,14 +21,14 @@ export default class CheckoutProcess {
     this.calculateItemSummary();
     // Initial calculation for tax/shipping/total can happen here or later
     // For now, let's calculate it based on initial cart load
-    this.calculateOrdertotal(); 
+    this.calculateOrdertotal();
   }
 
   calculateItemSummary() {
     // Calculate the total of all items in the cart based on quantity
     this.itemTotal = this.list.reduce(
       (sum, item) => sum + item.FinalPrice * (item.quantity || 1),
-      0
+      0,
     );
     // Display the subtotal
     this.displayOrderTotals(); // Update display after calculation
@@ -38,18 +38,21 @@ export default class CheckoutProcess {
     // Calculate shipping
     if (this.list.length > 0) {
       // Calculate total quantity of items
-      const totalQuantity = this.list.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const totalQuantity = this.list.reduce(
+        (sum, item) => sum + (item.quantity || 1),
+        0,
+      );
       this.shipping = shippingBase + (totalQuantity - 1) * shippingAdditional;
     } else {
       this.shipping = 0;
     }
-    
+
     // Calculate tax
     this.tax = this.itemTotal * taxRate;
-    
+
     // Calculate final order total
     this.orderTotal = this.itemTotal + this.tax + this.shipping;
-    
+
     // Display all totals
     this.displayOrderTotals();
   }
@@ -62,10 +65,13 @@ export default class CheckoutProcess {
       const taxElement = outputElement.querySelector("#tax");
       const orderTotalElement = outputElement.querySelector("#orderTotal");
 
-      if (subtotalElement) subtotalElement.textContent = `$${this.itemTotal.toFixed(2)}`;
-      if (shippingElement) shippingElement.textContent = `$${this.shipping.toFixed(2)}`;
+      if (subtotalElement)
+        subtotalElement.textContent = `$${this.itemTotal.toFixed(2)}`;
+      if (shippingElement)
+        shippingElement.textContent = `$${this.shipping.toFixed(2)}`;
       if (taxElement) taxElement.textContent = `$${this.tax.toFixed(2)}`;
-      if (orderTotalElement) orderTotalElement.textContent = `$${this.orderTotal.toFixed(2)}`;
+      if (orderTotalElement)
+        orderTotalElement.textContent = `$${this.orderTotal.toFixed(2)}`;
     }
   }
 
@@ -73,11 +79,11 @@ export default class CheckoutProcess {
   packageItems() {
     // convert the list of products from localStorage to the simpler form required for the checkout process.
     // An Array.map would be perfect for this process.
-    return this.list.map(item => ({
+    return this.list.map((item) => ({
       id: item.Id,
       name: item.Name, // Assuming Name includes brand, adjust if needed
       price: item.FinalPrice,
-      quantity: item.quantity || 1 // Use stored quantity
+      quantity: item.quantity || 1, // Use stored quantity
     }));
   }
 
@@ -92,12 +98,9 @@ export default class CheckoutProcess {
     json.shipping = this.shipping.toFixed(2);
     json.items = this.packageItems();
 
-    console.log("Order Data:", json); // Log the data being sent
-
     try {
       const services = new ExternalServices();
       const res = await services.checkout(json); // Call ExternalServices checkout
-      console.log("Server Response:", res); 
       // Clear cart and redirect on success
       // Assuming a successful response object exists and doesn't throw an error
       setLocalStorage(this.key, []); // Clear the cart in localStorage
