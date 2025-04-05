@@ -63,6 +63,56 @@ export async function loadTemplate(path) {
   return template;
 }
 
+export function alertMessage(message, scroll = true) {
+  // Create alert element
+  const alert = document.createElement("div");
+  alert.classList.add("alert");
+  
+  // Add styles to the alert container
+  alert.style.cssText = `
+    position: relative;
+    padding: 1rem 2rem 1rem 1rem;
+    margin: 1rem 0;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 0.25rem;
+    color: #721c24;
+  `;
+
+  // Create alert content with better structure
+  alert.innerHTML = `
+    <p style="margin: 0; padding-right: 1rem">${message}</p>
+    <span class="close" style="
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #721c24;
+      padding: 0 5px;
+    ">×</span>
+  `;
+
+  // Add to top of main
+  const main = document.querySelector("main");
+  main.prepend(alert);
+
+  // Add close button handler
+  alert.querySelector(".close").addEventListener("click", function() {
+    main.removeChild(alert);
+  });
+
+  // Scroll to top if requested
+  if (scroll) window.scrollTo(0, 0);
+
+  // Auto remove after 7 seconds
+  setTimeout(function() {
+    if (alert.parentNode) main.removeChild(alert);
+  }, 7000);
+}
+
 export async function loadHeaderFooter() {
   // Reverted paths based on Vite's public directory handling
   const headerTemplate = await loadTemplate("/partials/header.html");
@@ -94,8 +144,7 @@ export async function loadHeaderFooter() {
       }
     }
   } catch (error) {
-    console.error("Error updating cart count:", error);
-    // Optionally hide the count element on error
+    // On error, just hide the cart count
     const cartCountElement = document.querySelector(".cart-count");
     if (cartCountElement) {
       cartCountElement.classList.add("hide");

@@ -5,6 +5,33 @@ const taxRate = 0.06; // 6% sales tax
 const shippingBase = 10; // $10 for the first item
 const shippingAdditional = 2; // $2 for each additional item
 
+const services = new ExternalServices();
+/**
+ * Converts the formData object to a JSON object
+ * @param {FormData} formData The FormData object to convert
+ * @returns {Object} The JSON object representation of the FormData
+ */
+function formDataToJSON(formElement) {
+  const formData = new FormData(formElement);
+  const json = {};
+  // Convert FormData entries to a simple object
+  for (const [key, value] of formData.entries()) {
+    json[key] = value;
+  }
+  return json;
+}
+// takes the items currently stored in the cart (localstorage) and returns them in a simplified form.
+function packageItems(items) {
+  // convert the list of products from localStorage to the simpler form required for the checkout process.
+  // An Array.map would be perfect for this process.
+  return items.map((item) => ({
+    id: item.Id,
+    name: item.Name, // Assuming Name includes brand, adjust if needed
+    price: item.FinalPrice,
+    quantity: 1, // Use stored quantity
+  }));
+}
+
 export default class CheckoutProcess {
   constructor(key, outputSelector) {
     this.key = key; // localStorage key for cart items ('so-cart')
@@ -75,55 +102,29 @@ export default class CheckoutProcess {
     }
   }
 
-  // takes the items currently stored in the cart (localstorage) and returns them in a simplified form.
-  packageItems() {
-    // convert the list of products from localStorage to the simpler form required for the checkout process.
-    // An Array.map would be perfect for this process.
-    return this.list.map((item) => ({
-      id: item.Id,
-      name: item.Name, // Assuming Name includes brand, adjust if needed
-      price: item.FinalPrice,
-      quantity: item.quantity || 1, // Use stored quantity
-    }));
-  }
-
-  // Placeholder for handling checkout submission
   async checkout(form) {
     // Build the data object
-    const json = formDataToJSON(form);
-    // Add order information
-    json.orderDate = new Date().toISOString();
-    json.orderTotal = this.orderTotal.toFixed(2); // Ensure string format if needed by server
-    json.tax = this.tax.toFixed(2);
-    json.shipping = this.shipping.toFixed(2);
-    json.items = this.packageItems();
+    const order = formDataToJSON(form);
+
+    order.orderDate = new Date().toISOString();
+    order.orderTotal = this.orderTotal;
+    order.tax = this.tax;
+    order.shipping = this.shipping;
+    order.items = packageItems(this.list);
 
     try {
-      const services = new ExternalServices();
-      const res = await services.checkout(json); // Call ExternalServices checkout
-      // Clear cart and redirect on success
-      // Assuming a successful response object exists and doesn't throw an error
+      const response = await services.checkout(order);
       setLocalStorage(this.key, []); // Clear the cart in localStorage
-      window.location.href = "/checkout/success.html"; // Redirect to success page
+      return response;
     } catch (err) {
-      // Handle error (display message - stretch goal)
-      console.error("Checkout Error:", err);
-      // Display error message to user (next activity)
+      if (err.name === "servicesError" && typeof err.message === "object") {
+        // Handle validation errors
+        const errors = Object.values(err.message).filter(msg => msg); // Remove empty messages
+        throw { name: "validationError", messages: errors };
+      } else {
+        // Handle other types of errors
+        throw new Error("An unexpected error occurred. Please try again.");
+      }
     }
   }
-}
-
-/**
- * Converts the formData object to a JSON object
- * @param {FormData} formData The FormData object to convert
- * @returns {Object} The JSON object representation of the FormData
- */
-function formDataToJSON(formElement) {
-  const formData = new FormData(formElement);
-  const json = {};
-  // Convert FormData entries to a simple object
-  for (const [key, value] of formData.entries()) {
-    json[key] = value;
-  }
-  return json;
 }
