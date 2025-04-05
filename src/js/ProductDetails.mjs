@@ -9,13 +9,17 @@ function productDetailsTemplate(product) {
       src="${product.Images.PrimaryLarge}"
       alt="${product.NameWithoutBrand}"
     />
-    ${product.ListPrice && product.ListPrice > product.FinalPrice
-      ? `<p class="product-card__price--original"><del>$${product.ListPrice.toFixed(2)}</del></p>`
-      : ""}
+    ${
+      product.ListPrice && product.ListPrice > product.FinalPrice
+        ? `<p class="product-card__price--original"><del>$${product.ListPrice.toFixed(2)}</del></p>`
+        : ""
+    }
     <p class="product-card__price--final">$${product.FinalPrice.toFixed(2)}</p>
-    ${product.ListPrice && product.ListPrice > product.FinalPrice
-      ? `<p class="product-card__price--savings">You save $${(product.ListPrice - product.FinalPrice).toFixed(2)}</p>`
-      : ""}
+    ${
+      product.ListPrice && product.ListPrice > product.FinalPrice
+        ? `<p class="product-card__price--savings">You save $${(product.ListPrice - product.FinalPrice).toFixed(2)}</p>`
+        : ""
+    }
     <p class="product__color">${product.Colors[0].ColorName}</p>
     <p class="product__description">
     ${product.DescriptionHtmlSimple}
@@ -111,6 +115,52 @@ export default class ProductDetails {
     } else {
       setLocalStorage("so-cart", [this.product]); // if it's not an array, create one with the product and save it
     }
+
+    // Update cart count
+    const cartCountElement = document.querySelector(".cart-count");
+    if (cartCountElement) {
+      const currentCart = getLocalStorage("so-cart") || [];
+      const cartCount = Array.isArray(currentCart) ? currentCart.length : 0;
+      cartCountElement.textContent = cartCount;
+      cartCountElement.classList.remove("hide");
+    }
+
+    // Show notification
+    const alertSection = document.createElement("div");
+    alertSection.classList.add("alert");
+    alertSection.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      border-radius: 4px;
+      z-index: 1000;
+      animation: slideIn 0.5s ease-out;
+    `;
+
+    // Add animation keyframes
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    alertSection.textContent = `${this.product.NameWithoutBrand} added to cart`;
+    document.body.appendChild(alertSection);
+
+    // Remove the notification after 3 seconds
+    setTimeout(() => {
+      alertSection.style.animation = "slideIn 0.5s ease-out reverse";
+      setTimeout(() => {
+        alertSection.remove();
+        style.remove();
+      }, 500);
+    }, 3000);
   }
   renderProductDetails(selector) {
     const element = document.querySelector(selector);
