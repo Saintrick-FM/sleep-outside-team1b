@@ -29,7 +29,7 @@ document.querySelector("#checkout-form").addEventListener("submit", async (e) =>
     await checkout.checkout(form);
     
     // Redirect to success page or show success message
-    window.location.href = "/checkout/success.html";
+    window.location.href = "../checkout/success.html";
   } catch (err) {
     // Re-enable submit button
     submitButton.disabled = false;
